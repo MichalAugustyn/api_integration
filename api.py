@@ -52,25 +52,12 @@ class NotificationID(Resource):
 
 class NotificationDATE(Resource):
     def get(self, url_date):
-        if len(url_date.split('T')) == 2:
-            date = url_date.split('T')[0]
-            time = url_date.split('T')[1]
-            print date
-            print time
-        elif len(url_date.split('T')) == 1:
-            date = url_date.split('T')[0]
-            time = '00:00:00'
-            print date
-            print time
-        else:
-            date = '1900-01-01'
-            time = '00:00:00'
 
-        if len(url_date.split(':')) == 3:
-            pass
+        date, time = self.parse_time(url_date)
 
         if not self.validate_time(time) or not self.validate_date(date):
             return {'error': 'Invalid datetime'}
+        print date+'T'+time
 
     def validate_date(self, date):
         try:
@@ -85,6 +72,27 @@ class NotificationDATE(Resource):
             return True
         except ValueError:
             return False
+
+    def parse_time(self,url_date):
+        split_date = url_date.split('T')
+
+        date = split_date[0] if len(split_date) > 0 else '1900-01-01'
+        time = split_date[1] if len(split_date) > 1 else '00:00:00'
+
+        date_list = re.findall('\d+', date)
+        time_list = re.findall('\d+', time)
+
+        year = date_list[0] if len(date_list) > 0  else '1900'
+        month = date_list[1] if len(date_list) > 1 else '01'
+        day = date_list[2] if len(date_list) > 2 else '01'
+        hour = time_list[0] if len(time_list) > 0 else '00'
+        minute = time_list[1] if len(time_list) > 1 else '00'
+        second = time_list[2] if len(time_list) > 2 else '00'
+
+        date = '%s-%s-%s' % (year, month, day)
+        time = '%s:%s:%s' % (hour, minute, second)
+        return date, time
+
         # date = url_date().split()[0]
         # try:
         #     time = url_date().split()[1]
