@@ -138,9 +138,9 @@ class CallerID(Resource):
         return items_list
 
 
-api.add_resource(NotificationID, '/Notification/id/<string:url_id>')
-api.add_resource(NotificationDATE, '/Notification/date/<string:url_date>')
-api.add_resource(CallerID, '/Caller/<string:url_id>')
+api.add_resource(NotificationID, '/notification/id/<string:url_id>')
+api.add_resource(NotificationDATE, '/notification/date/<string:url_date>')
+api.add_resource(CallerID, '/caller/<string:url_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
