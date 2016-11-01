@@ -57,7 +57,7 @@ class NotificationDATE(Resource):
 
         if not self.validate_time(time) or not self.validate_date(date):
             return {'error': 'Invalid datetime'}
-        print date+'T'+time
+        return date+'T'+time
 
     def validate_date(self, date):
         try:
@@ -74,20 +74,17 @@ class NotificationDATE(Resource):
             return False
 
     def parse_time(self,url_date):
-        split_date = url_date.split('T')
+        datetime_list = re.findall('\d+', url_date)
 
-        date = split_date[0] if len(split_date) > 0 else '1900-01-01'
-        time = split_date[1] if len(split_date) > 1 else '00:00:00'
+        if not datetime_list:
+            return 'invalid', 'datetime'
 
-        date_list = re.findall('\d+', date)
-        time_list = re.findall('\d+', time)
-
-        year = date_list[0] if len(date_list) > 0  else '1900'
-        month = date_list[1] if len(date_list) > 1 else '01'
-        day = date_list[2] if len(date_list) > 2 else '01'
-        hour = time_list[0] if len(time_list) > 0 else '00'
-        minute = time_list[1] if len(time_list) > 1 else '00'
-        second = time_list[2] if len(time_list) > 2 else '00'
+        year = datetime_list[0] if len(datetime_list) > 0  else '1900'
+        month = datetime_list[1] if len(datetime_list) > 1 else '01'
+        day = datetime_list[2] if len(datetime_list) > 2 else '01'
+        hour = datetime_list[3] if len(datetime_list) > 3 else '00'
+        minute = datetime_list[4] if len(datetime_list) > 4 else '00'
+        second = datetime_list[5] if len(datetime_list) > 5 else '00'
 
         date = '%s-%s-%s' % (year, month, day)
         time = '%s:%s:%s' % (hour, minute, second)
