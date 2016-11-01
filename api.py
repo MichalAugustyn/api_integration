@@ -29,15 +29,17 @@ mysql.init_app(app)
 conn = mysql.connect()
 cursor = conn.cursor()
 
+
 class NotificationID(Resource):
     def get(self, url_id):
         if re.match('.*%.*', url_id):
-            cursor.execute('SELECT * FROM notification WHERE id like \'%s\'' % url_id)
+            cursor.execute(
+                'SELECT * FROM notification WHERE id LIKE \'%s\'' % url_id)
         else:
-            cursor.execute('SELECT * FROM notification WHERE id=\'%s\'' % url_id)
+            cursor.execute(
+                'SELECT * FROM notification WHERE id = \'%s\'' % url_id)
         data = cursor.fetchall()
         items_list = []
-        xml_items_list = []
         for x in data:
             items_list.append({'notification': {
                 'id': x[0],
@@ -47,17 +49,43 @@ class NotificationID(Resource):
                 'city': x[4],
                 'customer_id': x[5],
                 'description': x[6]
-                }})
-        return items_list
+            }})
+        return {'items': items_list}
+
 
 class NotificationDATE(Resource):
     def get(self, url_date):
+        if not re.match('^[><]?\d{1,4}-?\d{0,2}-?\d{0,2}T?\d{0,2}:?\d{0,2}:?\d{0,2}$', url_date):
+            return {'error': 'Invalid datetime format. Use YYYY-mm-ddThh:MM:SS'}
+        try:
+            operator = re.findall('([><])', url_date)[0]
+        except IndexError:
+            operator = '='
 
         date, time = self.parse_time(url_date)
 
         if not self.validate_time(time) or not self.validate_date(date):
             return {'error': 'Invalid datetime'}
-        return date+'T'+time
+        # return operator+date+'T'+time
+
+        cursor.execute(
+            'SELECT * FROM notification WHERE date %s \'%s %s\'' % (
+                operator, date, time))
+
+        data = cursor.fetchall()
+        items_list = []
+        for x in data:
+            items_list.append({'notification': {
+                'id': x[0],
+                'date': str(x[1]),
+                'street_number': x[2],
+                'street_name': x[3],
+                'city': x[4],
+                'customer_id': x[5],
+                'description': x[6]
+            }})
+        print date, time
+        return {'items': items_list, 'items_count': len(items_list)}
 
     def validate_date(self, date):
         try:
@@ -73,68 +101,41 @@ class NotificationDATE(Resource):
         except ValueError:
             return False
 
-    def parse_time(self,url_date):
+    def parse_time(self, url_date):
         datetime_list = re.findall('\d+', url_date)
 
-        if not datetime_list:
+        if datetime_list == []:
             return 'invalid', 'datetime'
 
-        year = datetime_list[0] if len(datetime_list) > 0  else '1900'
+        year = datetime_list[0] if len(datetime_list) > 0 else '1900'
         month = datetime_list[1] if len(datetime_list) > 1 else '01'
         day = datetime_list[2] if len(datetime_list) > 2 else '01'
         hour = datetime_list[3] if len(datetime_list) > 3 else '00'
         minute = datetime_list[4] if len(datetime_list) > 4 else '00'
         second = datetime_list[5] if len(datetime_list) > 5 else '00'
 
-        date = '%s-%s-%s' % (year, month, day)
-        time = '%s:%s:%s' % (hour, minute, second)
+        date = '%0.4d-%0.2d-%0.2d' % (int(year), int(month), int(day))
+        time = '%0.2d:%0.2d:%0.2d' % (int(hour), int(minute), int(second))
         return date, time
 
-        # date = url_date().split()[0]
-        # try:
-        #     time = url_date().split()[1]
-        # except ValueError:
-        #     time = '00:00:00'
-
-        # if re.match('^>.*', url_date):
-        #     print 'SELECT * FROM notification WHERE date>%s %s' % (date, time)
-        #     cursor.execute('SELECT * FROM notification WHERE date%s %s' % (date, time))
-        # if re.match('^<.*', url_date):
-        #     cursor.execute('SELECT * FROM notification WHERE date<%s' % url_date)
-        # else:
-        #     cursor.execute('SELECT * FROM notification WHERE date=%s' % url_date)
-        # data = cursor.fetchall()
-        # items_list = []
-        # xml_items_list = []
-        # for x in data:
-        #     items_list.append({'notification': {
-        #         'id': x[0],
-        #         'date': str(x[1]),
-        #         'street_number': x[2],
-        #         'street_name': x[3],
-        #         'city': x[4],
-        #         'customer_id': x[5],
-        #         'description': x[6]
-        #         }})
-        # return items_list
 
 class CallerID(Resource):
     def get(self, url_id):
-        if re.match('.*>.*', url_date):
-            cursor.execute('SELECT * FROM caller WHERE date>\'%s\'' % url_date)
-        if re.match('.*<.*', url_date):
-            cursor.execute('SELECT * FROM caller WHERE date<\'%s\'' % url_date)
+        if re.match('.*>.*', url_id):
+            cursor.execute('SELECT * FROM caller WHERE date>\'%s\'' % url_id)
+        if re.match('.*<.*', url_id):
+            cursor.execute('SELECT * FROM caller WHERE date<\'%s\'' % url_id)
         else:
-            cursor.execute('SELECT * FROM caller WHERE date=\'%s\'' % url_date)
+            cursor.execute('SELECT * FROM caller WHERE date=\'%s\'' % url_id)
         data = cursor.fetchall()
         items_list = []
         for x in data:
-            items_list.append( {
+            items_list.append({
                 'id': x[0],
                 'name': x[1],
                 'phone_prefix': x[2],
                 'phone_number': x[3]
-                })
+            })
         return items_list
 
 
@@ -143,4 +144,4 @@ api.add_resource(NotificationDATE, '/notification/date/<string:url_date>')
 api.add_resource(CallerID, '/caller/<string:url_id>')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
