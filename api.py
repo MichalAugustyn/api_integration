@@ -50,7 +50,7 @@ class NotificationID(Resource):
                 'customer_id': x[5],
                 'description': x[6]
             }})
-        return {'items': items_list}
+        return {'items': items_list, 'items_count': len(items_list)}
 
 
 class NotificationDATE(Resource):
@@ -118,6 +118,96 @@ class NotificationDATE(Resource):
         time = '%0.2d:%0.2d:%0.2d' % (int(hour), int(minute), int(second))
         return date, time
 
+class NotificationSTREET(Resource):
+    def get(self, url_street):
+        url_street = ' '.join(url_street.split('_'))
+        if re.match('.*%.*', url_street):
+            cursor.execute(
+                'SELECT * FROM notification WHERE street_name LIKE \'%s\'' % url_street)
+        else:
+            cursor.execute(
+                'SELECT * FROM notification WHERE street_name = \'%s\'' % url_street)
+        data = cursor.fetchall()
+        items_list = []
+        for x in data:
+            items_list.append({'notification': {
+                'id': x[0],
+                'date': str(x[1]),
+                'street_number': x[2],
+                'street_name': x[3],
+                'city': x[4],
+                'customer_id': x[5],
+                'description': x[6]
+            }})
+        return {'items': items_list, 'items_count': len(items_list)}
+
+class NotificationCITY(Resource):
+    def get(self, url_city):
+        url_city = ' '.join(url_city.split('_'))
+        if re.match('.*%.*', url_city):
+            cursor.execute(
+                'SELECT * FROM notification WHERE city LIKE \'%s\'' % url_city)
+        else:
+            cursor.execute(
+                'SELECT * FROM notification WHERE city = \'%s\'' % url_city)
+        data = cursor.fetchall()
+        items_list = []
+        for x in data:
+            items_list.append({'notification': {
+                'id': x[0],
+                'date': str(x[1]),
+                'street_number': x[2],
+                'street_name': x[3],
+                'city': x[4],
+                'customer_id': x[5],
+                'description': x[6]
+            }})
+        return {'items': items_list, 'items_count': len(items_list)}
+
+class NotificationCUSTOMERID(Resource):
+    def get(self, url_customer_id):
+        if re.match('.*%.*', url_customer_id):
+            cursor.execute(
+                'SELECT * FROM notification WHERE customer_id LIKE \'%s\'' % url_customer_id)
+        else:
+            cursor.execute(
+                'SELECT * FROM notification WHERE customer_id = \'%s\'' % url_customer_id)
+        data = cursor.fetchall()
+        items_list = []
+        for x in data:
+            items_list.append({'notification': {
+                'id': x[0],
+                'date': str(x[1]),
+                'street_number': x[2],
+                'street_name': x[3],
+                'city': x[4],
+                'customer_id': x[5],
+                'description': x[6]
+            }})
+        return {'items': items_list, 'items_count': len(items_list)}
+
+class NotificationDESCRIPTION(Resource):
+    def get(self, url_description):
+        url_description = ' '.join(url_description.split('_'))
+        if re.match('.*%.*', url_description):
+            cursor.execute(
+                'SELECT * FROM notification WHERE description LIKE \'%s\'' % url_description)
+        else:
+            cursor.execute(
+                'SELECT * FROM notification WHERE description = \'%s\'' % url_description)
+        data = cursor.fetchall()
+        items_list = []
+        for x in data:
+            items_list.append({'notification': {
+                'id': x[0],
+                'date': str(x[1]),
+                'street_number': x[2],
+                'street_name': x[3],
+                'city': x[4],
+                'customer_id': x[5],
+                'description': x[6]
+            }})
+        return {'items': items_list, 'items_count': len(items_list)}
 
 class CallerID(Resource):
     def get(self, url_id):
@@ -141,6 +231,11 @@ class CallerID(Resource):
 
 api.add_resource(NotificationID, '/notification/id/<string:url_id>')
 api.add_resource(NotificationDATE, '/notification/date/<string:url_date>')
+api.add_resource(NotificationSTREET, '/notification/street/<string:url_street>')
+api.add_resource(NotificationCITY, '/notification/city/<string:url_city>')
+api.add_resource(NotificationCUSTOMERID, '/notification/customerid/<string:url_customer_id>')
+api.add_resource(NotificationDESCRIPTION, '/notification/description/<string:url_description>')
+
 api.add_resource(CallerID, '/caller/<string:url_id>')
 
 if __name__ == '__main__':
