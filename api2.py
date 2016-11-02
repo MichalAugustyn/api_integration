@@ -55,8 +55,11 @@ class NotificationID(Resource):
 
 class NotificationDATE(Resource):
     def get(self, url_date):
-        if not re.match('^[><]?\d{1,4}-?\d{0,2}-?\d{0,2}T?\d{0,2}:?\d{0,2}:?\d{0,2}$', url_date):
-            return {'error': 'Invalid datetime format. Use YYYY-mm-ddThh:MM:SS'}
+        if not re.match(
+            '^[><]?\d{1,4}-?\d{0,2}-?\d{0,2}T?\d{0,2}:?\d{0,2}:?\d{0,2}$',
+                url_date):
+            return {
+                'error': 'Invalid datetime format. Use YYYY-mm-ddThh:MM:SS'}
         try:
             operator = re.findall('([><])', url_date)[0]
         except IndexError:
@@ -118,15 +121,18 @@ class NotificationDATE(Resource):
         time = '%0.2d:%0.2d:%0.2d' % (int(hour), int(minute), int(second))
         return date, time
 
+
 class NotificationSTREET(Resource):
     def get(self, url_street):
         url_street = ' '.join(url_street.split('_'))
         if re.match('.*%.*', url_street):
             cursor.execute(
-                'SELECT * FROM notification WHERE street_name LIKE \'%s\'' % url_street)
+                'SELECT * FROM notification WHERE street_name LIKE \'%s\'' %
+                url_street)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE street_name = \'%s\'' % url_street)
+                'SELECT * FROM notification WHERE street_name = \'%s\'' %
+                url_street)
         data = cursor.fetchall()
         items_list = []
         for x in data:
@@ -140,6 +146,7 @@ class NotificationSTREET(Resource):
                 'description': x[6]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
+
 
 class NotificationCITY(Resource):
     def get(self, url_city):
@@ -164,14 +171,17 @@ class NotificationCITY(Resource):
             }})
         return {'items': items_list, 'items_count': len(items_list)}
 
+
 class NotificationCUSTOMERID(Resource):
     def get(self, url_customer_id):
         if re.match('.*%.*', url_customer_id):
             cursor.execute(
-                'SELECT * FROM notification WHERE customer_id LIKE \'%s\'' % url_customer_id)
+                'SELECT * FROM notification WHERE customer_id LIKE \'%s\'' %
+                url_customer_id)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE customer_id = \'%s\'' % url_customer_id)
+                'SELECT * FROM notification WHERE customer_id = \'%s\'' %
+                url_customer_id)
         data = cursor.fetchall()
         items_list = []
         for x in data:
@@ -186,15 +196,18 @@ class NotificationCUSTOMERID(Resource):
             }})
         return {'items': items_list, 'items_count': len(items_list)}
 
+
 class NotificationDESCRIPTION(Resource):
     def get(self, url_description):
         url_description = ' '.join(url_description.split('_'))
         if re.match('.*%.*', url_description):
             cursor.execute(
-                'SELECT * FROM notification WHERE description LIKE \'%s\'' % url_description)
+                'SELECT * FROM notification WHERE description LIKE \'%s\'' %
+                url_description)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE description = \'%s\'' % url_description)
+                'SELECT * FROM notification WHERE description = \'%s\'' %
+                url_description)
         data = cursor.fetchall()
         items_list = []
         for x in data:
@@ -208,6 +221,7 @@ class NotificationDESCRIPTION(Resource):
                 'description': x[6]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
+
 
 class CallerID(Resource):
     def get(self, url_id):
@@ -229,12 +243,18 @@ class CallerID(Resource):
         return items_list
 
 
-api.add_resource(NotificationID, '/notification/id/<string:url_id>')
-api.add_resource(NotificationDATE, '/notification/date/<string:url_date>')
-api.add_resource(NotificationSTREET, '/notification/street/<string:url_street>')
-api.add_resource(NotificationCITY, '/notification/city/<string:url_city>')
-api.add_resource(NotificationCUSTOMERID, '/notification/customerid/<string:url_customer_id>')
-api.add_resource(NotificationDESCRIPTION, '/notification/description/<string:url_description>')
+api.add_resource(NotificationID,
+                 '/notification/id/<string:url_id>')
+api.add_resource(NotificationDATE,
+                 '/notification/date/<string:url_date>')
+api.add_resource(NotificationSTREET,
+                 '/notification/street/<string:url_street>')
+api.add_resource(NotificationCITY,
+                 '/notification/city/<string:url_city>')
+api.add_resource(NotificationCUSTOMERID,
+                 '/notification/customerid/<string:url_customer_id>')
+api.add_resource(NotificationDESCRIPTION,
+                 '/notification/description/<string:url_description>')
 
 api.add_resource(CallerID, '/caller/<string:url_id>')
 
