@@ -225,24 +225,89 @@ class NotificationDESCRIPTION(Resource):
 
 class CallerID(Resource):
     def get(self, url_id):
-        if re.match('.*>.*', url_id):
-            cursor.execute('SELECT * FROM caller WHERE date>\'%s\'' % url_id)
-        if re.match('.*<.*', url_id):
-            cursor.execute('SELECT * FROM caller WHERE date<\'%s\'' % url_id)
+        if re.match('.*%.*', url_id):
+            cursor.execute(
+                'SELECT * FROM caller WHERE id LIKE \'%s\'' % url_id)
         else:
-            cursor.execute('SELECT * FROM caller WHERE date=\'%s\'' % url_id)
+            cursor.execute(
+                'SELECT * FROM caller WHERE id = \'%s\'' % url_id)
         data = cursor.fetchall()
         items_list = []
         for x in data:
-            items_list.append({
+            items_list.append({'caller': {
                 'id': x[0],
                 'name': x[1],
                 'phone_prefix': x[2],
                 'phone_number': x[3]
-            })
-        return items_list
+            }})
+        return {'items': items_list, 'items_count': len(items_list)}
 
 
+class CallerNAME(Resource):
+    def get(self, url_name):
+        url_name = ' '.join(url_name.split('_'))
+        if re.match('.*%.*', url_name):
+            cursor.execute(
+                'SELECT * FROM caller WHERE street_name LIKE \'%s\'' %
+                url_name)
+        else:
+            cursor.execute(
+                'SELECT * FROM caller WHERE street_name = \'%s\'' %
+                url_name)
+        data = cursor.fetchall()
+        items_list = []
+        for x in data:
+            items_list.append({'caller': {
+                'id': x[0],
+                'name': x[1],
+                'phone_prefix': x[2],
+                'phone_number': x[3]
+            }})
+        return {'items': items_list, 'items_count': len(items_list)}
+
+
+class CallerPHONEPREFIX(Resource):
+    def get(self, url_phone_prefix):
+        if re.match('.*%.*', url_phone_prefix):
+            cursor.execute(
+                'SELECT * FROM caller WHERE phone_prefix LIKE \'%s\'' %
+                url_phone_prefix)
+        else:
+            cursor.execute(
+                'SELECT * FROM caller WHERE phone_prefix = \'%s\'' %
+                url_phone_prefix)
+        data = cursor.fetchall()
+        items_list = []
+        for x in data:
+            items_list.append({'caller': {
+                'id': x[0],
+                'name': x[1],
+                'phone_prefix': x[2],
+                'phone_number': x[3]
+            }})
+        return {'items': items_list, 'items_count': len(items_list)}
+
+
+class CallerPHONENUMBER(Resource):
+    def get(self, url_phone_number):
+        if re.match('.*%.*', url_phone_number):
+            cursor.execute(
+                'SELECT * FROM caller WHERE phone_number LIKE \'%s\'' %
+                url_phone_number)
+        else:
+            cursor.execute(
+                'SELECT * FROM caller WHERE phone_number = \'%s\'' %
+                url_phone_number)
+        data = cursor.fetchall()
+        items_list = []
+        for x in data:
+            items_list.append({'caller': {
+                'id': x[0],
+                'name': x[1],
+                'phone_prefix': x[2],
+                'phone_number': x[3]
+            }})
+        return {'items': items_list, 'items_count': len(items_list)}
 api.add_resource(NotificationID,
                  '/notification/id/<string:url_id>')
 api.add_resource(NotificationDATE,
@@ -256,7 +321,14 @@ api.add_resource(NotificationCUSTOMERID,
 api.add_resource(NotificationDESCRIPTION,
                  '/notification/description/<string:url_description>')
 
-api.add_resource(CallerID, '/caller/<string:url_id>')
+api.add_resource(CallerID,
+                 '/caller/id/<string:url_id>')
+api.add_resource(CallerNAME,
+                 '/caller/name/<string:url_name>')
+api.add_resource(CallerPHONEPREFIX,
+                 '/caller/phone_prefix/<string:url_phone_prefix>')
+api.add_resource(CallerPHONENUMBER,
+                 '/caller/phone_number/<string:url_phone_number>')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(port='2222')
