@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from simplexml import dumps
 from flask import make_response, Flask
 from flask import Flask
@@ -47,7 +48,7 @@ class NotificationID(Resource):
                 'date_time': str(x[1]),
                 'address': x[2],
                 'city': x[3],
-                'customer_id': x[4],
+                'caller_id': x[4],
                 'additional_information': x[5]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
@@ -83,7 +84,7 @@ class NotificationDATETIME(Resource):
                 'date_time': str(x[1]),
                 'address': x[2],
                 'city': x[3],
-                'customer_id': x[4],
+                'caller_id': x[4],
                 'additional_information': x[5]
             }})
         print date, time
@@ -141,7 +142,7 @@ class NotificationADDRESS(Resource):
                 'date_time': str(x[1]),
                 'address': x[2],
                 'city': x[3],
-                'customer_id': x[4],
+                'caller_id': x[4],
                 'additional_information': x[5]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
@@ -165,23 +166,23 @@ class NotificationCITY(Resource):
                 'date_time': str(x[1]),
                 'address': x[2],
                 'city': x[3],
-                'customer_id': x[4],
+                'caller_id': x[4],
                 'additional_information': x[5]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
 
 
-class NotificationCUSTOMERID(Resource):
-    def get(self, url_customer_id):
-        if re.match('.*\*.*', url_customer_id):
-            url_customer_id = url_customer_id.replace('*', '%')
+class NotificationcallerID(Resource):
+    def get(self, url_caller_id):
+        if re.match('.*\*.*', url_caller_id):
+            url_caller_id = url_caller_id.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM notification WHERE customer_id LIKE \'%s\'' %
-                url_customer_id)
+                'SELECT * FROM notification WHERE caller_id LIKE \'%s\'' %
+                url_caller_id)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE customer_id = \'%s\'' %
-                url_customer_id)
+                'SELECT * FROM notification WHERE caller_id = \'%s\'' %
+                url_caller_id)
         data = cursor.fetchall()
         items_list = []
         for x in data:
@@ -190,7 +191,7 @@ class NotificationCUSTOMERID(Resource):
                 'date_time': str(x[1]),
                 'address': x[2],
                 'city': x[3],
-                'customer_id': x[4],
+                'caller_id': x[4],
                 'additional_information': x[5]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
@@ -216,7 +217,7 @@ class NotificationADDITIONALINFORMATION(Resource):
                 'date_time': str(x[1]),
                 'address': x[2],
                 'city': x[3],
-                'customer_id': x[4],
+                'caller_id': x[4],
                 'additional_information': x[5]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
@@ -321,8 +322,8 @@ api.add_resource(NotificationADDRESS,
                  '/notification/address/<string:url_address>')
 api.add_resource(NotificationCITY,
                  '/notification/city/<string:url_city>')
-api.add_resource(NotificationCUSTOMERID,
-                 '/notification/customerid/<string:url_customer_id>')
+api.add_resource(NotificationcallerID,
+                 '/notification/callerid/<string:url_caller_id>')
 api.add_resource(NotificationADDITIONALINFORMATION,
                  '/notification/add_information/<string:add_info>')
 

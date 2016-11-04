@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from simplexml import dumps
 from flask import make_response, Flask
 from flask import Flask
@@ -32,7 +33,8 @@ cursor = conn.cursor()
 
 class NotificationID(Resource):
     def get(self, url_id):
-        if re.match('.*%.*', url_id):
+        if re.match('.*\*.*', url_id):
+            url_id = url_id.replace('*', '%')
             cursor.execute(
                 'SELECT * FROM notification WHERE id LIKE \'%s\'' % url_id)
         else:
@@ -47,7 +49,7 @@ class NotificationID(Resource):
                 'street_number': x[2],
                 'street_name': x[3],
                 'city': x[4],
-                'customer_id': x[5],
+                'caller_id': x[5],
                 'description': x[6]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
@@ -84,7 +86,7 @@ class NotificationDATE(Resource):
                 'street_number': x[2],
                 'street_name': x[3],
                 'city': x[4],
-                'customer_id': x[5],
+                'caller_id': x[5],
                 'description': x[6]
             }})
         print date, time
@@ -125,7 +127,8 @@ class NotificationDATE(Resource):
 class NotificationSTREET(Resource):
     def get(self, url_street):
         url_street = ' '.join(url_street.split('_'))
-        if re.match('.*%.*', url_street):
+        if re.match('.*\*.*', url_street):
+            url_street = url_street.replace('*', '%')
             cursor.execute(
                 'SELECT * FROM notification WHERE street_name LIKE \'%s\'' %
                 url_street)
@@ -142,7 +145,7 @@ class NotificationSTREET(Resource):
                 'street_number': x[2],
                 'street_name': x[3],
                 'city': x[4],
-                'customer_id': x[5],
+                'caller_id': x[5],
                 'description': x[6]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
@@ -151,7 +154,8 @@ class NotificationSTREET(Resource):
 class NotificationCITY(Resource):
     def get(self, url_city):
         url_city = ' '.join(url_city.split('_'))
-        if re.match('.*%.*', url_city):
+        if re.match('.*\*.*', url_city):
+            url_city = url_city.replace('*', '%')
             cursor.execute(
                 'SELECT * FROM notification WHERE city LIKE \'%s\'' % url_city)
         else:
@@ -166,22 +170,23 @@ class NotificationCITY(Resource):
                 'street_number': x[2],
                 'street_name': x[3],
                 'city': x[4],
-                'customer_id': x[5],
+                'caller_id': x[5],
                 'description': x[6]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
 
 
-class NotificationCUSTOMERID(Resource):
-    def get(self, url_customer_id):
-        if re.match('.*%.*', url_customer_id):
+class NotificationCALLERID(Resource):
+    def get(self, url_caller_id):
+        if re.match('.*\*.*', url_caller_id):
+            url_caller_id = url_caller_id.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM notification WHERE customer_id LIKE \'%s\'' %
-                url_customer_id)
+                'SELECT * FROM notification WHERE caller_id LIKE \'%s\'' %
+                url_caller_id)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE customer_id = \'%s\'' %
-                url_customer_id)
+                'SELECT * FROM notification WHERE caller_id = \'%s\'' %
+                url_caller_id)
         data = cursor.fetchall()
         items_list = []
         for x in data:
@@ -191,7 +196,7 @@ class NotificationCUSTOMERID(Resource):
                 'street_number': x[2],
                 'street_name': x[3],
                 'city': x[4],
-                'customer_id': x[5],
+                'caller_id': x[5],
                 'description': x[6]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
@@ -201,6 +206,7 @@ class NotificationDESCRIPTION(Resource):
     def get(self, url_description):
         url_description = ' '.join(url_description.split('_'))
         if re.match('.*%.*', url_description):
+            url_description = url_description.replace('*', '%')
             cursor.execute(
                 'SELECT * FROM notification WHERE description LIKE \'%s\'' %
                 url_description)
@@ -217,7 +223,7 @@ class NotificationDESCRIPTION(Resource):
                 'street_number': x[2],
                 'street_name': x[3],
                 'city': x[4],
-                'customer_id': x[5],
+                'caller_id': x[5],
                 'description': x[6]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
@@ -226,6 +232,7 @@ class NotificationDESCRIPTION(Resource):
 class CallerID(Resource):
     def get(self, url_id):
         if re.match('.*%.*', url_id):
+            url_id = url_id.replace('*', '%')
             cursor.execute(
                 'SELECT * FROM caller WHERE id LIKE \'%s\'' % url_id)
         else:
@@ -247,6 +254,7 @@ class CallerNAME(Resource):
     def get(self, url_name):
         url_name = ' '.join(url_name.split('_'))
         if re.match('.*%.*', url_name):
+            url_name = url_name.replace('*', '%')
             cursor.execute(
                 'SELECT * FROM caller WHERE street_name LIKE \'%s\'' %
                 url_name)
@@ -268,7 +276,8 @@ class CallerNAME(Resource):
 
 class CallerPHONEPREFIX(Resource):
     def get(self, url_phone_prefix):
-        if re.match('.*%.*', url_phone_prefix):
+        if re.matchix('.*%.*', url_phone_prefix):
+            url_phone_prefix = url_phone_prefix.replace('*', '%')
             cursor.execute(
                 'SELECT * FROM caller WHERE phone_prefix LIKE \'%s\'' %
                 url_phone_prefix)
@@ -291,6 +300,7 @@ class CallerPHONEPREFIX(Resource):
 class CallerPHONENUMBER(Resource):
     def get(self, url_phone_number):
         if re.match('.*%.*', url_phone_number):
+            url_phone_number = url_phone_number.replace('*', '%')
             cursor.execute(
                 'SELECT * FROM caller WHERE phone_number LIKE \'%s\'' %
                 url_phone_number)
@@ -308,6 +318,7 @@ class CallerPHONENUMBER(Resource):
                 'phone_number': x[3]
             }})
         return {'items': items_list, 'items_count': len(items_list)}
+
 api.add_resource(NotificationID,
                  '/notification/id/<string:url_id>')
 api.add_resource(NotificationDATE,
@@ -316,8 +327,8 @@ api.add_resource(NotificationSTREET,
                  '/notification/street/<string:url_street>')
 api.add_resource(NotificationCITY,
                  '/notification/city/<string:url_city>')
-api.add_resource(NotificationCUSTOMERID,
-                 '/notification/customerid/<string:url_customer_id>')
+api.add_resource(NotificationcallerID,
+                 '/notification/callerid/<string:url_caller_id>')
 api.add_resource(NotificationDESCRIPTION,
                  '/notification/description/<string:url_description>')
 
