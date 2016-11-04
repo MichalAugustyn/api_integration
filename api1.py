@@ -13,9 +13,25 @@ from flask.ext.mysql import MySQL
 
 def output_xml(data, code, headers=None):
     """Makes a Flask response with a XML encoded body"""
-    resp = make_response(dumps({'response' :data}), code)
+    resp = make_response(dumps({'response': data}), code)
     resp.headers.extend(headers or {})
     return resp
+
+def create_response(data):not
+        items_list = []
+        for x in data:
+            items_list.append({
+                'id': x[0],
+                'date_time': str(x[1]),
+                'address': x[2],
+                'city': x[3],
+                'caller_id': x[4],
+                'additional_information': x[5],
+                'name': x[7],
+                'last_name': x[8],
+                'phone': x[9]
+            })
+        return {'items': items_list, 'items_count': len(items_list)}
 
 app = Flask(__name__)
 api = Api(app, default_mediatype='application/json')
@@ -29,31 +45,30 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 conn = mysql.connect()
 cursor = conn.cursor()
+basic_sql = 'SELECT * FROM notification, caller WHERE notification.caller_id = caller.id '
 
 
+@api.resource('/notification')
+class Notification(Resource):
+    def get(self):
+        cursor.execute(basic_sql)
+        return create_response(cursor.fetchall())
+
+
+@api.resource('/notification/id/<string:url_id>')
 class NotificationID(Resource):
     def get(self, url_id):
         if re.match('.*\*.*', url_id):
             url_id = url_id.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM notification WHERE id LIKE \'%s\'' % url_id)
+                basic_sql + 'and notification.id LIKE \'%s\'' % url_id)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE id = \'%s\'' % url_id)
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'notification': {
-                'id': x[0],
-                'date_time': str(x[1]),
-                'address': x[2],
-                'city': x[3],
-                'caller_id': x[4],
-                'additional_information': x[5]
-            }})
-        return {'items': items_list, 'items_count': len(items_list)}
+                basic_sql + 'and notification.id = \'%s\'' % url_id)
+        return create_response(cursor.fetchall())
 
 
+@api.resource('/notification/date_time/<string:url_date_time>')
 class NotificationDATETIME(Resource):
     def get(self, url_date_time):
         if not re.match(
@@ -62,7 +77,7 @@ class NotificationDATETIME(Resource):
             return {
                 'error': 'Invalid datetime format. Use YYYY-mm-ddThh:MM:SS'}
         try:
-            operator = re.findall('([><])', url_date)[0]
+            operator = re.findall('([><])', url_date_time)[0]
         except IndexError:
             operator = '='
 
@@ -70,25 +85,11 @@ class NotificationDATETIME(Resource):
 
         if not self.validate_time(time) or not self.validate_date(date):
             return {'error': 'Invalid datetime'}
-        # return operator+date+'T'+time
 
         cursor.execute(
-            'SELECT * FROM notification WHERE date_time %s \'%s %s\'' % (
+            basic_sql + 'and notification.date_time %s \'%s %s\'' % (
                 operator, date, time))
-
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'notification': {
-                'id': x[0],
-                'date_time': str(x[1]),
-                'address': x[2],
-                'city': x[3],
-                'caller_id': x[4],
-                'additional_information': x[5]
-            }})
-        print date, time
-        return {'items': items_list, 'items_count': len(items_list)}
+        return create_response(cursor.fetchall())
 
     def validate_date(self, date):
         try:
@@ -128,213 +129,117 @@ class NotificationADDRESS(Resource):
         if re.match('.*\*.*', url_address):
             url_address = url_address.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM notification WHERE address LIKE \'%s\'' %
+                basic_sql + 'and notification.address LIKE \'%s\'' %
                 url_address)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE address = \'%s\'' %
+                basic_sql + 'and notification.address = \'%s\'' %
                 url_address)
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'notification': {
-                'id': x[0],
-                'date_time': str(x[1]),
-                'address': x[2],
-                'city': x[3],
-                'caller_id': x[4],
-                'additional_information': x[5]
-            }})
-        return {'items': items_list, 'items_count': len(items_list)}
+        return create_response(cursor.fetchall())
 
 
+@api.resource('/notification/city/<string:url_city>')
 class NotificationCITY(Resource):
     def get(self, url_city):
         url_city = ' '.join(url_city.split('_'))
         if re.match('.*\*.*', url_city):
             url_city = url_city.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM notification WHERE city LIKE \'%s\'' % url_city)
+                basic_sql + 'and notification.city LIKE \'%s\'' % url_city)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE city = \'%s\'' % url_city)
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'notification': {
-                'id': x[0],
-                'date_time': str(x[1]),
-                'address': x[2],
-                'city': x[3],
-                'caller_id': x[4],
-                'additional_information': x[5]
-            }})
-        return {'items': items_list, 'items_count': len(items_list)}
+                basic_sql + 'and notification.city = \'%s\'' % url_city)
+        return create_response(cursor.fetchall())
 
 
+@api.resource('/notification/callerid/<string:url_caller_id>')
 class NotificationcallerID(Resource):
     def get(self, url_caller_id):
         if re.match('.*\*.*', url_caller_id):
             url_caller_id = url_caller_id.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM notification WHERE caller_id LIKE \'%s\'' %
+                basic_sql + 'and notification.caller_id LIKE \'%s\'' %
                 url_caller_id)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE caller_id = \'%s\'' %
+                basic_sql + 'and notification.caller_id = \'%s\'' %
                 url_caller_id)
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'notification': {
-                'id': x[0],
-                'date_time': str(x[1]),
-                'address': x[2],
-                'city': x[3],
-                'caller_id': x[4],
-                'additional_information': x[5]
-            }})
-        return {'items': items_list, 'items_count': len(items_list)}
+        return create_response(cursor.fetchall())
 
 
+@api.resource('/notification/add_information/<string:add_info>')
 class NotificationADDITIONALINFORMATION(Resource):
     def get(self, url_add_info):
         url_add_info = ' '.join(url_add_info.split('_'))
         if re.match('.*\*.*', url_add_info):
             url_add_info = url_add_info.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM notification WHERE additional_information LIKE \'%s\'' %
+                basic_sql + 'and notification.additional_information LIKE \'%s\'' %
                 url_add_info)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE additional_information = \'%s\'' %
+                basic_sql + 'and notification.additional_information = \'%s\'' %
                 url_add_info)
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'notification': {
-                'id': x[0],
-                'date_time': str(x[1]),
-                'address': x[2],
-                'city': x[3],
-                'caller_id': x[4],
-                'additional_information': x[5]
-            }})
-        return {'items': items_list, 'items_count': len(items_list)}
+        return create_response(cursor.fetchall())
 
 
+@api.resource('/caller/id/<string:url_id>')
 class CallerID(Resource):
     def get(self, url_id):
         if re.match('.*\*.*', url_id):
             url_id = url_id.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM caller WHERE id LIKE \'%s\'' % url_id)
+                basic_sql + 'and caller.id LIKE \'%s\'' % url_id)
         else:
             cursor.execute(
-                'SELECT * FROM caller WHERE id = \'%s\'' % url_id)
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'caller': {
-                'id': x[0],
-                'name': x[1],
-                'last_name': x[2],
-                'phone': x[3]
-            }})
-        return {'items': items_list, 'items_count': len(items_list)}
+                basic_sql + 'and caller.id = \'%s\'' % url_id)
+        return create_response(cursor.fetchall())
 
 
+@api.resource('/caller/name/<string:url_name>')
 class CallerNAME(Resource):
     def get(self, url_name):
         url_name = ' '.join(url_name.split('_'))
         if re.match('.*\*.*', url_name):
             url_name = url_name.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM caller WHERE name LIKE \'%s\'' %
+                basic_sql + 'and caller.name LIKE \'%s\'' %
                 url_name)
         else:
             cursor.execute(
-                'SELECT * FROM caller WHERE name = \'%s\'' %
+                basic_sql + 'and caller.name = \'%s\'' %
                 url_name)
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'caller': {
-                'id': x[0],
-                'name': x[1],
-                'last_name': x[2],
-                'phone': x[3]
-            }})
-        return {'items': items_list, 'items_count': len(items_list)}
+        return create_response(cursor.fetchall())
 
 
+@api.resource('/caller/last_name/<string:url_last_name>')
 class CallerLASTNAME(Resource):
     def get(self, url_last_name):
         if re.match('.*\*.*', url_last_name):
             url_last_name = url_last_name.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM caller WHERE last_name LIKE \'%s\'' %
+                basic_sql + 'and caller.last_name LIKE \'%s\'' %
                 url_last_name)
         else:
             cursor.execute(
-                'SELECT * FROM caller WHERE last_name = \'%s\'' %
+                basic_sql + 'and caller.last_name = \'%s\'' %
                 url_last_name)
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'caller': {
-                'id': x[0],
-                'name': x[1],
-                'last_name': x[2],
-                'phone': x[3]
-            }})
-        return {'items': items_list, 'items_count': len(items_list)}
+        return create_response(cursor.fetchall())
 
 
+@api.resource('/caller/phone/<string:url_phone>')
 class CallerPHONE(Resource):
     def get(self, url_phone):
         if re.match('.*\*.*', url_phone):
             url_phone = url_phone.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM caller WHERE phone LIKE \'%s\'' %
+                basic_sql + 'and caller.phone LIKE \'%s\'' %
                 url_phone)
         else:
             cursor.execute(
-                'SELECT * FROM caller WHERE phone = \'%s\'' %
+                basic_sql + 'and caller.phone = \'%s\'' %
                 url_phone)
-        data = cursor.fetchall()
-        items_list = []
-        for x in data:
-            items_list.append({'caller': {
-                'id': x[0],
-                'name': x[1],
-                'last_name': x[2],
-                'phone': x[3]
-            }})
-        return {'items': items_list, 'items_count': len(items_list)}
-
-
-api.add_resource(NotificationID,
-                 '/notification/id/<string:url_id>')
-api.add_resource(NotificationDATETIME,
-                 '/notification/date_time/<string:url_date_time>')
-api.add_resource(NotificationADDRESS,
-                 '/notification/address/<string:url_address>')
-api.add_resource(NotificationCITY,
-                 '/notification/city/<string:url_city>')
-api.add_resource(NotificationcallerID,
-                 '/notification/callerid/<string:url_caller_id>')
-api.add_resource(NotificationADDITIONALINFORMATION,
-                 '/notification/add_information/<string:add_info>')
-
-api.add_resource(CallerID,
-                 '/caller/id/<string:url_id>')
-api.add_resource(CallerNAME,
-                 '/caller/name/<string:url_name>')
-api.add_resource(CallerLASTNAME,
-                 '/caller/last_name/<string:url_last_name>')
-api.add_resource(CallerPHONE,
-                 '/caller/phone/<string:url_phone>')
+        return create_response(cursor.fetchall())
 
 if __name__ == '__main__':
     app.run(port='1111')
