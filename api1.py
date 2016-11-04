@@ -17,7 +17,7 @@ def output_xml(data, code, headers=None):
     resp.headers.extend(headers or {})
     return resp
 
-def create_response(data):not
+def create_response(data):
         items_list = []
         for x in data:
             items_list.append({
