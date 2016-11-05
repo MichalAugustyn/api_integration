@@ -10,31 +10,14 @@ from flask_restful import reqparse
 from xml.etree import ElementTree
 from flask.ext.mysql import MySQL
 
-
 def output_xml(data, code, headers=None):
     """Makes a Flask response with a XML encoded body"""
-    resp = make_response(dumps({'response': data}), code)
+    resp = make_response(data, code)
     resp.headers.extend(headers or {})
     return resp
 
-def create_response(data):
-        items_list = []
-        for x in data:
-            items_list.append({
-                'id': x[0],
-                'date_time': str(x[1]),
-                'address': x[2],
-                'city': x[3],
-                'caller_id': x[4],
-                'additional_information': x[5],
-                'name': x[7],
-                'last_name': x[8],
-                'phone': x[9]
-            })
-        return {'items': items_list, 'items_count': len(items_list)}
-
 app = Flask(__name__)
-api = Api(app, default_mediatype='application/json')
+api = Api(app, default_mediatype='application/xml')
 api.representations['application/xml'] = output_xml
 
 mysql = MySQL()
@@ -122,7 +105,7 @@ class NotificationDATETIME(Resource):
         time = '%0.2d:%0.2d:%0.2d' % (int(hour), int(minute), int(second))
         return date, time
 
-
+@api.resource('/notification/street/<string:url_street>')
 class NotificationADDRESS(Resource):
     def get(self, url_address):
         url_address = ' '.join(url_street.split('_'))
@@ -240,6 +223,22 @@ class CallerPHONE(Resource):
                 basic_sql + 'and caller.phone = \'%s\'' %
                 url_phone)
         return create_response(cursor.fetchall())
+
+def create_response(data):
+        items_list = []
+        for x in data:
+            items_list.append({
+                'id': x[0],
+                'date_time': str(x[1]),
+                'address': x[2],
+                'city': x[3],
+                'caller_id': x[4],
+                'additional_information': x[5],
+                'name': x[7],
+                'last_name': x[8],
+                'phone': x[9]
+            })
+        return dumps({'response': {'items': items_list, 'items_count': len(items_list)}})
 
 if __name__ == '__main__':
     app.run(port='1111')
