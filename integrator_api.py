@@ -19,7 +19,7 @@ api = Api(app, default_mediatype='application/json')
 @api.resource('/notification')
 class Notification(Resource):
     def get(self):
-        return integrate_items()
+        return integrate_items()['items']
 
 
 @api.resource('/notification/id/<string:url_id>')
@@ -27,7 +27,7 @@ class NotificationID(Resource):
     def get(self, url_id):
         return [
             x 
-            for x in integrate_items() 
+            for x in integrate_items()['items']
             if re.match(url_id, x['id'])]
 
 
@@ -74,17 +74,17 @@ class NotificationSTREET(Resource):
     def get(self, url_street):
         return [
             x 
-            for x in integrate_items() 
-            if re.match(url_id, x['street_name'])]
+            for x in integrate_items()['items']
+            if re.match(url_street, x['street_name'])]
 
 
 @api.resource('/notification/city/<string:url_city>')
 class NotificationCITY(Resource):
     def get(self, url_city):
-        return [
+        print [
             x 
-            for x in integrate_items() 
-            if re.match(url_id, x['city'])]
+            for x in integrate_items()['items'] 
+            if re.match(url_city, x['city'])]
 
 
 @api.resource('/notification/description/<string:url_description>')
@@ -92,8 +92,8 @@ class NotificationDESCRIPTION(Resource):
     def get(self, url_description):
         return [
             x 
-            for x in integrate_items() 
-            if re.match(url_id, x['description'])]
+            for x in integrate_items()['items']
+            if re.match(url_description, x['description'])]
 
 
 @api.resource('/caller/name/<string:url_name>')
@@ -101,17 +101,17 @@ class CallerNAME(Resource):
     def get(self, url_name):
         return [
             x 
-            for x in integrate_items() 
-            if re.match(url_id, x['name'])]
+            for x in integrate_items()['items']
+            if re.match(url_name, x['name'])]
 
 
-@api.resource('/caller/name/<string:url_name>')
+@api.resource('/caller/last_name/<string:url_last_name>')
 class CallerLASTNAME(Resource):
-    def get(self, url_name):
+    def get(self, url_last_name):
         return [
             x 
-            for x in integrate_items() 
-            if re.match(url_id, x['last_name'])]
+            for x in integrate_items()['items']
+            if re.match(url_last_name, x['last_name'])]
 
 
 @api.resource('/caller/phone_prefix/<string:url_phone_prefix>')
@@ -119,8 +119,8 @@ class CallerPHONEPREFIX(Resource):
     def get(self, url_phone_prefix):
         return [
             x 
-            for x in integrate_items() 
-            if re.match(url_id, x['phone_prefix'])]
+            for x in integrate_items()['items']
+            if re.match(url_phone_prefix, x['phone_prefix'])]
 
 
 @api.resource('/caller/phone_number/<string:url_phone_number>')
@@ -128,7 +128,7 @@ class CallerPHONENUMBER(Resource):
     def get(self, url_phone_number):
         return [
             x 
-            for x in integrate_items() 
+            for x in integrate_items()['items']
             if re.match(url_id, x['phone_number'])]
 
  
