@@ -50,19 +50,6 @@ class NotificationDATE(Resource):
 
         return {'date': date_formatted, 'operator': operator}
 
-    def validate_daete(self, date):
-        try:
-            datetime.strptime(date, '%Y-%m-%d')
-            return True
-        except ValueError:
-            return False
-
-    def validate_time(self, time):
-        try:
-            datetime.strptime(time, '%H:%M:%S')
-            return True
-        except ValueError:
-            return False
 
     def parse_time(self, url_date):
         datetime_list = re.findall('\d+', url_date)
@@ -175,9 +162,9 @@ def integrate_items():
             'city': x['city'],
             'description': x['description'].capitalize()
             } for x in provider_2_items['items']]
-
-        return sorted(provider_2_integrated + provider_1_integrated,
+        items_list = sorted(provider_2_integrated + provider_1_integrated,
             key=lambda x: x['date'])
+        return {'items': items_list, 'items_count': len(items_list)}
 
 if __name__ == '__main__':
     app.run(debug=True, host='localhost', port=3333)
