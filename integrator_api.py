@@ -19,7 +19,7 @@ api = Api(app, default_mediatype='application/json')
 @api.resource('/notification')
 class Notification(Resource):
     def get(self):
-        return integrate_items(req_1, req_2)
+        return integrate_items()
 
 
 @api.resource('/notification/id/<string:url_id>')
@@ -27,7 +27,7 @@ class NotificationID(Resource):
     def get(self, url_id):
         return [
             x 
-            for x in integrate_items(req_1, req_2) 
+            for x in integrate_items() 
             if re.match(url_id, x['id'])]
 
 
@@ -43,7 +43,7 @@ class NotificationSTREET(Resource):
     def get(self, url_street):
         return [
             x 
-            for x in integrate_items(req_1, req_2) 
+            for x in integrate_items() 
             if re.match(url_id, x['street_name'])]
 
 
@@ -52,7 +52,7 @@ class NotificationCITY(Resource):
     def get(self, url_city):
         return [
             x 
-            for x in integrate_items(req_1, req_2) 
+            for x in integrate_items() 
             if re.match(url_id, x['city'])]
 
 
@@ -61,7 +61,7 @@ class NotificationDESCRIPTION(Resource):
     def get(self, url_description):
         return [
             x 
-            for x in integrate_items(req_1, req_2) 
+            for x in integrate_items() 
             if re.match(url_id, x['description'])]
 
 
@@ -70,7 +70,7 @@ class CallerNAME(Resource):
     def get(self, url_name):
         return [
             x 
-            for x in integrate_items(req_1, req_2) 
+            for x in integrate_items() 
             if re.match(url_id, x['name'])]
 
 
@@ -79,7 +79,7 @@ class CallerLASTNAME(Resource):
     def get(self, url_name):
         return [
             x 
-            for x in integrate_items(req_1, req_2) 
+            for x in integrate_items() 
             if re.match(url_id, x['last_name'])]
 
 
@@ -88,7 +88,7 @@ class CallerPHONEPREFIX(Resource):
     def get(self, url_phone_prefix):
         return [
             x 
-            for x in integrate_items(req_1, req_2) 
+            for x in integrate_items() 
             if re.match(url_id, x['phone_prefix'])]
 
 
@@ -97,25 +97,25 @@ class CallerPHONENUMBER(Resource):
     def get(self, url_phone_number):
         return [
             x 
-            for x in integrate_items(req_1, req_2) 
+            for x in integrate_items() 
             if re.match(url_id, x['phone_number'])]
 
  
-def integrate_items(provider_1_request, provider_2_request):
+def integrate_items():
         provider_1_request = requests.get('http://localhost:1111/notification')
         provider_2_request = requests.get('http://localhost:2222/notification')
         provider_1_items = loads(json.loads(provider_1_request.text))['response']
         provider_1_integrated = [{
             'id': x['id'],
             'date': x['date_time'],
-            'name': x['name'],
-            'last_name': x['last_name'],
+            'name': x['name'].capitalize(),
+            'last_name': x['last_name'].capitalize(),
             'phone_prefix': int(re.findall('\((\d+)\)', x['phone'])[0]),
             'phone_number': int("".join(re.findall('(\d+)-(\d+)', x['phone'])[0])),
             'street_number': int(re.findall('(\d+) (.+)', x['address'])[0][0]),
             'street_name': re.findall('(\d+) (.+)', x['address'])[0][1],
             'city': x['city'],
-            'description': x['additional_information']
+            'description': x['additional_information'].capitalize()
             } for x in provider_1_items['items'] ]
 
         provider_2_items = json.loads(provider_2_request.text)
@@ -123,17 +123,17 @@ def integrate_items(provider_1_request, provider_2_request):
             'id': x['id'],
             'date': x['date'],
             'name': x['name'].split()[0],
-            'last_name': x['name'].split()[1],
+            'last_name': x['name'].split()[1].capitalize(),
             'phone_prefix': x['phone_prefix'],
             'phone_number': x['phone_number'],
             'street_number': x['street_number'],
             'street_name': x['street_name'],
             'city': x['city'],
-            'description': x['description']
+            'description': x['description'].capitalize()
             } for x in provider_2_items['items']]
 
         return sorted(provider_2_integrated + provider_1_integrated,
             key=lambda x: x['date'])
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='localhost', port=3333)
