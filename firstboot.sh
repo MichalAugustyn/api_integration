@@ -17,3 +17,5 @@ sudo pip install python-simplexml
 sudo pip install requests
 sudo pip install mysql-connector
 
+cd ~/Desktop
+git clone http://github.com/MichalAugustyn/api_integration
