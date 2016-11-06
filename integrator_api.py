@@ -35,8 +35,52 @@ class NotificationID(Resource):
 class NotificationDATE(Resource):
     def get(self, url_date):
         # datetime.strptime(x['date'], '%Y-%m-%d %H:%M:%S')
-        pass
 
+        try:
+            operator = re.findall('[><]?', url_date)[0][0]
+        except IndexError:
+            operator = '='
+        try:
+            date = re.findall('^[><]?([\d:-T]*)', url_date)[0][1]
+            date_formatted = self.parse_time(url_date)
+            datetime.strptime(date_formatted, '%Y-%m-%dT%H:%M:%S')
+        except (ValueError, IndexError):
+            return {'error': 'Invalid data format. Use %Y-%m-%dT%H:%M:%S',
+                'hint': 'It is allowed to provide incomplete data (%Y, %Y-%m, etc'}
+
+        return {'date': date_formatted, 'operator': operator}
+
+    def validate_daete(self, date):
+        try:
+            datetime.strptime(date, '%Y-%m-%d')
+            return True
+        except ValueError:
+            return False
+
+    def validate_time(self, time):
+        try:
+            datetime.strptime(time, '%H:%M:%S')
+            return True
+        except ValueError:
+            return False
+
+    def parse_time(self, url_date):
+        datetime_list = re.findall('\d+', url_date)
+
+        if datetime_list == []:
+            return 'invalid', 'datetime'
+
+        year = datetime_list[0] if len(datetime_list) > 0 else '1900'
+        month = datetime_list[1] if len(datetime_list) > 1 else '01'
+        day = datetime_list[2] if len(datetime_list) > 2 else '01'
+        hour = datetime_list[3] if len(datetime_list) > 3 else '00'
+        minute = datetime_list[4] if len(datetime_list) > 4 else '00'
+        second = datetime_list[5] if len(datetime_list) > 5 else '00'
+
+        date = '%0.4d-%0.2d-%0.2d' % (int(year), int(month), int(day))
+        time = '%0.2d:%0.2d:%0.2d' % (int(hour), int(minute), int(second))
+        # return datetime.strptime(date + 'T' + time, '%Y-%m-%dT%H:%M:%S')
+        return date + 'T' + time
 
 @api.resource('/notification/street/<string:url_street>')
 class NotificationSTREET(Resource):
