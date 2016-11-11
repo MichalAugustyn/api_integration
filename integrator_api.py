@@ -16,10 +16,67 @@ app = Flask(__name__)
 api = Api(app, default_mediatype='application/json')
 
 
+
 @api.resource('/notification')
 class Notification(Resource):
     def get(self):
         return integrate_items()['items']
+
+    def post(self):
+        def argument_add(argument, parser):
+            parser.add_argument(argument, type=str)
+            arg = parser.parse_args()
+            return arg[argument]
+
+        def define_filters():
+            filters = []
+            filters.append(lambda n: re.match(_id, n['id'])) if _id else None
+            filters.append(lambda n: re.match(_name, n['name'])) if _name else None
+            filters.append(lambda n: datetime.strptime(
+                _after, '%Y-%m-%dT%H:%M:%S') < datetime.strptime(
+                n['date'], '%Y-%m-%d %H:%M:%S')) if _after else None
+            filters.append(lambda n: datetime.strptime(
+                _before, '%Y-%m-%dT%H:%M:%S') > datetime.strptime(
+                n['date'], '%Y-%m-%d %H:%M:%S')) if _before else None
+            filters.append(lambda n: re.match(_last_name, n['last_name'])) if _last_name else None
+            filters.append(lambda n: re.match(_phone_prefix, str(n['phone_prefix']))) if _phone_prefix else None
+            filters.append(lambda n: re.match(_phone_number, str(n['phone_number']))) if _phone_number else None
+            filters.append(lambda n: re.match(_street_number, str(n['street_number']))) if _street_number else None
+            filters.append(lambda n: re.match(_street_name, n['street_name'])) if _street_name else None
+            filters.append(lambda n: re.match(_city, n['city'])) if _city else None
+            filters.append(lambda n: re.match(_description, n['description'])) if _description else None
+            return filters
+
+        parser = reqparse.RequestParser()
+        _id = argument_add('id', parser)
+        _date = argument_add('date', parser)
+        _after = argument_add('after', parser)
+        if _after:
+            try:
+                _after = parse_time(_after)
+                datetime.strptime(_after, '%Y-%m-%dT%H:%M:%S')
+            except ValueError:
+                _after = None
+        _before = argument_add('before', parser)
+        if _before:
+            try:
+                _before = parse_time(_before)
+                datetime.strptime(_before, '%Y-%m-%dT%H:%M:%S')
+            except ValueError:
+                _before = None
+        _name = argument_add('name', parser)
+        _last_name = argument_add('last_name', parser)
+        _phone_prefix = argument_add('phone_prefix', parser)
+        _phone_number = argument_add('phone_number', parser)
+        _street_number = argument_add('street_number', parser)
+        _street_name = argument_add('street_name', parser)
+        _city = argument_add('city', parser)
+        _description = argument_add('description', parser)
+
+        items_list = integrate_items()
+        filters = define_filters()
+        filtered_list = filter(lambda x: all(f(x) for f in filters), items_list['items'])
+        return filtered_list        
 
 
 @api.resource('/notification/id/<string:url_id>')
@@ -42,7 +99,7 @@ class NotificationDATE(Resource):
             operator = '='
         try:
             date = re.findall('^[><]?([\d:-T]*)', url_date)[0][1]
-            date_formatted = self.parse_time(url_date)
+            date_formatted = parse_time(url_date)
             datetime.strptime(date_formatted, '%Y-%m-%dT%H:%M:%S')
         except (ValueError, IndexError):
             return {'error': 'Invalid data format. Use %Y-%m-%dT%H:%M:%S',
@@ -50,24 +107,6 @@ class NotificationDATE(Resource):
 
         return {'date': date_formatted, 'operator': operator}
 
-
-    def parse_time(self, url_date):
-        datetime_list = re.findall('\d+', url_date)
-
-        if datetime_list == []:
-            return 'invalid', 'datetime'
-
-        year = datetime_list[0] if len(datetime_list) > 0 else '1900'
-        month = datetime_list[1] if len(datetime_list) > 1 else '01'
-        day = datetime_list[2] if len(datetime_list) > 2 else '01'
-        hour = datetime_list[3] if len(datetime_list) > 3 else '00'
-        minute = datetime_list[4] if len(datetime_list) > 4 else '00'
-        second = datetime_list[5] if len(datetime_list) > 5 else '00'
-
-        date = '%0.4d-%0.2d-%0.2d' % (int(year), int(month), int(day))
-        time = '%0.2d:%0.2d:%0.2d' % (int(hour), int(minute), int(second))
-        # return datetime.strptime(date + 'T' + time, '%Y-%m-%dT%H:%M:%S')
-        return date + 'T' + time
 
 @api.resource('/notification/street/<string:url_street>')
 class NotificationSTREET(Resource):
@@ -165,6 +204,26 @@ def integrate_items():
         items_list = sorted(provider_2_integrated + provider_1_integrated,
             key=lambda x: x['date'])
         return {'items': items_list, 'items_count': len(items_list)}
+
+def parse_time(date):
+    datetime_list = re.findall('\d+', date)
+
+    if datetime_list == []:
+        return 'invalid', 'datetime'
+
+    year = datetime_list[0] if len(datetime_list) > 0 else '1900'
+    month = datetime_list[1] if len(datetime_list) > 1 else '01'
+    day = datetime_list[2] if len(datetime_list) > 2 else '01'
+    hour = datetime_list[3] if len(datetime_list) > 3 else '00'
+    minute = datetime_list[4] if len(datetime_list) > 4 else '00'
+    second = datetime_list[5] if len(datetime_list) > 5 else '00'
+
+    date = '%0.4d-%0.2d-%0.2d' % (int(year), int(month), int(day))
+    time = '%0.2d:%0.2d:%0.2d' % (int(hour), int(minute), int(second))
+    # return datetime.strptime(date + 'T' + time, '%Y-%m-%dT%H:%M:%S')
+    return date + 'T' + time
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='localhost', port=3333)
