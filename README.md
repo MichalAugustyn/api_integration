@@ -3,13 +3,17 @@
 ## Numery indeksów członków grupy
 * Michał Augustyn - 148989;
 * Radosław Zielonka - 149064;
+
 ## Użyte technologie / języki programowania
+
 ### Języki programowania
 * Python - API dostawców, HUB API, skrypt tworzący strukturę baz danych i ładujący do niej dane;
 * SQL - zapytania do baz danych;
+
 ### Technologie
 * Flask - (lekki framework do budowy aplikacji) - API dla dostawców, API integrujące;
 * MySQL - bazy danych dostawców;
+
 ### Biblioteki
 * json - przetwarzanie danych w formacie JSON;
 * simplexml - przetwarzanie danych w formacie XML
@@ -20,7 +24,7 @@
 * request - tworzenie zapytań HTTP;
 
 ## Schemat
-![Schemat](https://github.com/MichalAugustyn/api_integration/blob/master/Schemat.pdf)
+![alt tag](https://github.com/MichalAugustyn/api_integration/blob/master/Schemat.pdf)
 
 •schemat oraz opis architektury systemu;
 •opis dostawców, struktura encji;
