@@ -24,7 +24,7 @@
 * request - tworzenie zapytań HTTP;
 
 ## Schemat
-![alt tag](source/Diagram.png)
+![alt tag](Diagram.png)
 
 •schemat oraz opis architektury systemu;
 •opis dostawców, struktura encji;
