@@ -37,10 +37,12 @@
 http://github.com/MichalAugustyn/api_integration.git
 
 ## Podział pracy w grupie
-Michał Augustyn:
+
+### Michał Augustyn:
 * programowanie w języku Python;
 * projektowanie i implementacja rozwiązań
-Radosław Zielonka:
+
+### Radosław Zielonka:
 * przygotowanie danych;
 * tworzenie struktury bazy danych; 
 * tworzenie zapytań w języku SQL;
