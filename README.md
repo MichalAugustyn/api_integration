@@ -24,7 +24,7 @@
 * request - tworzenie zapytań HTTP;
 
 ## Schemat
-![alt tag](https://github.com/MichalAugustyn/api_integration/blob/master/Schemat.pdf)
+![alt tag](source/Diagram.png)
 
 •schemat oraz opis architektury systemu;
 •opis dostawców, struktura encji;
