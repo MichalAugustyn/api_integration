@@ -151,7 +151,18 @@ city | date | description | id | last_name | name | phone_number | phone_prefix 
 "Los Angeles" | "2013-10-04 14:46:16" | "Aenean auc..." | "LAN500" | "Ruiz" | "Katherine" | 1839793 | 911 | "Pond Street" | 80  
 
 ## Napotkane problemy
-* 
+
+* hosting aplikacji przy użyciu publicznego adresu IP
+problem nie został rozwiązany. Problem leży w odpowiedniej konfiguracji routera (przekierowywanie portów)
+
+* kombinacja znaku % i cyfr (składnia wyrażeń regularnych MySQL) w adresie URL zostaje rozszyfrowywana jako konkretny znak.
+rozwiązanie problemu - zamiana znaku zastępującego każdy znak z "%" na "*"
+
+* jedno z API zwracało odpowiedź w formacie XML dla zapytań w przeglądarce, natomiast dla zapytań w skrypcie - JSON
+rozwiązanie problemu - poprawa logiki sposobu zwracania odpowiedzi
+
+* możliwość porównywania dat jedynie w przypadku podania daty w całości
+rozwiązanie problemu - zastosowanie mechanizmu uzupełniania daty wartościami domyślnymi, jeżeli data jest niekompletna.
 
 ## Adres do repozytorium
 http://github.com/MichalAugustyn/api_integration.git
