@@ -50,41 +50,105 @@
 
 ### Różnice w strukturze baz danych dostawców
 
-* Tabela CALLER
-
+### Tabela CALLER
 #### Dostawca I
-  
 id | name | last_name | phone
 ------ | ---- | --------- | -------------
 NYC000 | JOE | EDWARDS | (546)300-4812
-
 #### Dostawca II
-
 id | name | phone_prefix | phone_number
 ------ | ------------- | --------- | -------------
 LAC000 | Alan Gonzales | 812 | 9302240
-
-
-* Tabela NOTIFICATION
-
+### Tabela NOTIFICATION
 #### Dostawca I
-  
 id | date_time | address | city | caller_id | additional_information
 ------ | ------- | ----------------- | ------------- | -------------- | --------------------
 NYN001 | 2010-10-23 09:10:18 | 3495 Jenifer Way | New York | NYC001 | PEDE MALESUADA INLIGUL
-
 #### Dostawca II
-
 id | date | street_number | street_name | city | caller_id | description
 ------ | ------------------- | ----------------------- | ------------- | -------------- | -------------------- | ----------------------
 LAN007 | 2010-11-08 08:47:22 | 54 | Birchwood Crossing | Avalon | LAC007 | VITAE IPSUM NON
 
 
 ### Różnice w odpowiedzi obu API
-*
 
-•opis dostawców, struktura encji;
-•opis huba, przebieg integracji encji, struktura wynikowa encji;
+* Dostawca I
+```xml
+<response>
+  <items>
+    <item>
+      <date_time>2010-10-23 09:10:18</date_time>
+      <last_name>WALLACE</last_name>
+      <city>New York</city>
+      <additional_information>PEDE MALESUADA IN IMPERDIET ET COMMODO VULPUTATE JUSTO IN BLANDIT</additional_information>
+      <address>3495 Jenifer Way</address>
+      <phone>(135)635-1735</phone>
+      <id>NYN001</id>
+      <caller_id>NYC001</caller_id>
+      <name>RALPH</name>
+    </item>
+  </items>
+  <items_count>1</items_count>
+</response>
+```
+* Dostawca II
+``` python
+{
+   "items":[
+      {
+         "caller_id":"LAC001",
+         "city":"Avalon",
+         "date":"2010-10-24 03:13:52",
+         "description":"TURPIS ELEMENTUM LIGULA VEHICULA CONSEQUAT MORBI A IPSUM INTEGER A NIBH IN",
+         "id":"LAN001",
+         "name":"Cheryl Jacobs",
+         "phone_number":8242123,
+         "phone_prefix":263,
+         "street_name":"3rd Hill",
+         "street_number":325
+      }
+   ],
+   "items_count":1
+}
+```
+
+## Opis aplikacji HUB API
+
+### Integracja pierwszego dostawcy:
+kod | działanie
+------------------------------------------------------------------------------- | --------------------------------------
+'id': x['id'], | pozostaje bez zmian
+'date': x[**'date_time'**], | zmiana nazwy atrybutu
+'name': x['name'].**capitalize()**, | zmiana wielkości liter (pierwsza wielka, reszta mała)
+'last_name': x['last_name'].**capitalize()**, | jak wyżej
+'phone_prefix': int(**re.findall('\((\d+)\)', x['phone'])[0]**), | wydobycie prefixu przy użyciu wyrażeń reg.
+'phone_number': int("".join(**re.findall('(\d+)-(\d+)', x['phone'])[0])**), | wydobycie numeru przy użyciu wyrażeń reg.
+'street_number': int(**re.findall('(\d+) (.+)', x['address'])[0][0]**), | wydobycie numeru ulicy przy użyciu wyrażeń reg.
+'street_name': **re.findall('(\d+) (.+)', x['address'])[0][1]**, | jak wyżej - wydobycie nazwy ulicy
+'city': x['city'], | pozostaje bez zmian
+'description': x['additional_information'].**capitalize()** | zmiana wielkości liter
+
+### Integracja drugiego dostawcy:
+kod | działanie
+------------------------------------------------------------------------------- | --------------------------------------
+* 'id': x['id'], | pozostaje bez zmian
+* 'date': x['date'], | pozostaje bez zmian
+* 'name': x['name'].**split()[0]**, | wydobycie pierwszego członu z imienia i nazwiska
+* 'last_name': x['name'].**split()[1].capitalize()**, | jak wyżej - wydobycie drugiego członu, zmiana wielkości  liter
+* 'phone_prefix': x['phone_prefix'], | pozostaje bez zmian
+* 'phone_number': x['phone_number'], | pozostaje bez zmian 
+* 'street_number': x['street_number'], | pozostaje bez zmian
+* 'street_name': x['street_name'], | pozostaje bez zmian
+* 'city': x['city'], | pozostaje bez zmian
+* 'description': x['description'].**capitalize()** | zmiana wielkości liter
+
+
+## Struktura wynikowa encji
+
+city | date | description | id | last_name | name | phone_number | phone_prefix | street_name | street_number
+------------- | ------------------------------ | ----------------------------------- | ----------- | ----------- | ------------ | ------------ | ------------- | ------ | ------
+"Buffalo" | "2013-10-06 12:10:47 | "Amet eler..." | "NYN500" | "Burke" | "Rebecca" | 7188468  | 653 | "Homewood Hill " | 1
+"Los Angeles" | "2013-10-04 14:46:16" | "Aenean auc..." | "LAN500" | "Ruiz" | "Katherine" | 1839793 | 911 | "Pond Street" | 80  
 
 ## Napotkane problemy
 * 
