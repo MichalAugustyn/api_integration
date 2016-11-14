@@ -159,8 +159,8 @@ lokalizacja | szczegóły | przykład
 /notification/id | filtrowanie danych po ID zdarzenia (regexp match) | /notifcation/id/NAN\.\*55
 /notification/date **X**| filtrowanie danych po dacie (data poprzedzona znakiem ">" lub "<" | /notification/date/>2015-10-05 12:15
 /notification/street | filtrowanie po nazwie ulicy (regexp match) | /notification/street/\.\*Avenue\.\* 
-/notification/city **X** | filtrowanie po nazwie miasta (regexp match) | /notification/city/\.\*Los\.\*
-/notification/description **X** | filtrowanie po opisie zdarzenia | /notification/description/\.\*lorem\.\*
+/notification/city | filtrowanie po nazwie miasta (regexp match) | /notification/city/\.\*Los\.\*
+/notification/description | filtrowanie po opisie zdarzenia | /notification/description/\.\*lorem\.\*
 /caller/name | filtrowanie po imieniu zgłaszającego | /caller/name/\.\*ath\.\*/\.\*
 /caller/last_name | filtrowanie po nazwisku zgłaszającego | /caller/last_name/\.\*ed
 /caller/phone_prefix | filtrowanie po prefiksie (regexp match) | /caller/phone_prefix/546
