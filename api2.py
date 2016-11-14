@@ -237,4 +237,4 @@ def create_response(data):
         return {'items': items_list, 'items_count': len(items_list)}
 
 if __name__ == '__main__':
-    app.run(port='2222')
+    app.run(debug=True, host='localhost', port=2222)

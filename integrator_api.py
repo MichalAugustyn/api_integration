@@ -16,7 +16,6 @@ app = Flask(__name__)
 api = Api(app, default_mediatype='application/json')
 
 
-
 @api.resource('/notification')
 class Notification(Resource):
     def get(self):
@@ -103,9 +102,14 @@ class NotificationDATE(Resource):
             datetime.strptime(date_formatted, '%Y-%m-%dT%H:%M:%S')
         except (ValueError, IndexError):
             return {'error': 'Invalid data format. Use %Y-%m-%dT%H:%M:%S',
-                'hint': 'It is allowed to provide incomplete data (%Y, %Y-%m, etc'}
+                'hint': 'It is allowed to provide incomplete data (%Y, %Y-%m, etc)'}
 
-        return {'date': date_formatted, 'operator': operator}
+        if operator == '>':
+            return [x for x in integrate_items()['items'] if x['date'] > date_formatted]
+        elif operator == '<':
+            return [x for x in integrate_items()['items'] if x['date'] < date_formatted]
+        if operator == '=':
+            return [x for x in integrate_items()['items'] if x['date'] == date_formatted]
 
 
 @api.resource('/notification/street/<string:url_street>')
@@ -120,7 +124,7 @@ class NotificationSTREET(Resource):
 @api.resource('/notification/city/<string:url_city>')
 class NotificationCITY(Resource):
     def get(self, url_city):
-        print [
+        return [
             x 
             for x in integrate_items()['items'] 
             if re.match(url_city, x['city'])]
@@ -159,7 +163,7 @@ class CallerPHONEPREFIX(Resource):
         return [
             x 
             for x in integrate_items()['items']
-            if re.match(url_phone_prefix, x['phone_prefix'])]
+            if re.match(url_phone_prefix, str(x['phone_prefix']))]
 
 
 @api.resource('/caller/phone_number/<string:url_phone_number>')
@@ -168,7 +172,7 @@ class CallerPHONENUMBER(Resource):
         return [
             x 
             for x in integrate_items()['items']
-            if re.match(url_id, x['phone_number'])]
+            if re.match(url_phone_number, str(x['phone_number']))]
 
  
 def integrate_items():
@@ -222,7 +226,6 @@ def parse_time(date):
     time = '%0.2d:%0.2d:%0.2d' % (int(hour), int(minute), int(second))
     # return datetime.strptime(date + 'T' + time, '%Y-%m-%dT%H:%M:%S')
     return date + 'T' + time
-
 
 
 if __name__ == '__main__':

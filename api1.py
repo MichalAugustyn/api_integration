@@ -241,4 +241,4 @@ def create_response(data):
         return dumps({'response': {'items': items_list, 'items_count': len(items_list)}})
 
 if __name__ == '__main__':
-    app.run(port='1111')
+    app.run(debug=True, host='localhost', port=1111)
