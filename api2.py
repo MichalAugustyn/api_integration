@@ -135,11 +135,11 @@ class NotificationCALLERID(Resource):
         if re.match('.*\*.*', url_caller_id):
             url_caller_id = url_caller_id.replace('*', '%')
             cursor.execute(
-                'SELECT * FROM notification WHERE caller_id LIKE \'%s\'' %
+                basic_sql + 'and notification.caller_id LIKE \'%s\'' %
                 url_caller_id)
         else:
             cursor.execute(
-                'SELECT * FROM notification WHERE caller_id = \'%s\'' %
+                basic_sql + 'and notification.caller_id = \'%s\'' %
                 url_caller_id)
         return create_response(cursor.fetchall())
 
@@ -192,7 +192,7 @@ class CallerNAME(Resource):
 @api.resource('/caller/phone_prefix/<string:url_phone_prefix>')
 class CallerPHONEPREFIX(Resource):
     def get(self, url_phone_prefix):
-        if re.matchix('.*\*.*', url_phone_prefix):
+        if re.match('.*\*.*', url_phone_prefix):
             url_phone_prefix = url_phone_prefix.replace('*', '%')
             cursor.execute(
                 basic_sql + 'and caller.phone_prefix LIKE \'%s\'' %

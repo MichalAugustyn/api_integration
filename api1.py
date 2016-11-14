@@ -107,7 +107,7 @@ class NotificationDATETIME(Resource):
 
 @api.resource('/notification/street/<string:url_street>')
 class NotificationADDRESS(Resource):
-    def get(self, url_address):
+    def get(self, url_street):
         url_address = ' '.join(url_street.split('_'))
         if re.match('.*\*.*', url_address):
             url_address = url_address.replace('*', '%')
@@ -150,7 +150,7 @@ class NotificationcallerID(Resource):
         return create_response(cursor.fetchall())
 
 
-@api.resource('/notification/add_information/<string:add_info>')
+@api.resource('/notification/add_information/<string:url_add_info>')
 class NotificationADDITIONALINFORMATION(Resource):
     def get(self, url_add_info):
         url_add_info = ' '.join(url_add_info.split('_'))
