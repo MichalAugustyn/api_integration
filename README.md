@@ -1,7 +1,7 @@
 # Dokumentacja
 
 ## Numery indeksów członków grupy
-* **Michał Augustyn** - 148989:
+* **Michał Augustyn** - 148989;
 * **Radosław Zielonka** - 149064
 
 ## Użyte technologie / języki programowania
@@ -16,7 +16,7 @@
 
 ### Biblioteki
 * **json** - przetwarzanie danych w formacie JSON;
-* **simplexml** - przetwarzanie danych w formacie XML
+* **simplexml** - przetwarzanie danych w formacie XML;
 * **datetime** - przetwarzanie dat (porównywanie, formatowanie, walidacja);
 * **re** - wykorzystanie wyrażeń regularnych;
 * **flask_restful** - rozszerzenie do framework'a Flask służące do budowania aplikacji API typu REST;
