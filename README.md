@@ -234,3 +234,9 @@ http://github.com/MichalAugustyn/api_integration.git
 * testowanie aplikacji
 
 ## Co byśmy zmienili gdybyśmy robili ten projekt jeszcze raz?
+* stworzenie bardziej rozbudowanej obsługi błędów;
+* wykorzystanie bardziej złożonej struktury bazy danych;
+* użycie frameworka Django;
+* rozszerzenie API o metody PUT, DELETE (dodawanie i usuwanie rekordów z bazy);
+* utworzenie mechanizmu autoryzacji użytkownika
+* optymalizacja zapytań bazodanowych
