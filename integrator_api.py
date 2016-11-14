@@ -29,21 +29,21 @@ class Notification(Resource):
 
         def define_filters():
             filters = []
-            filters.append(lambda n: re.match(_id, n['id'])) if _id else None
-            filters.append(lambda n: re.match(_name, n['name'])) if _name else None
+            filters.append(lambda n: re.match(_id, n['id'], re.IGNORECASE)) if _id else None
+            filters.append(lambda n: re.match(_name, n['name'], re.IGNORECASE)) if _name else None
             filters.append(lambda n: datetime.strptime(
                 _after, '%Y-%m-%dT%H:%M:%S') < datetime.strptime(
                 n['date'], '%Y-%m-%d %H:%M:%S')) if _after else None
             filters.append(lambda n: datetime.strptime(
                 _before, '%Y-%m-%dT%H:%M:%S') > datetime.strptime(
                 n['date'], '%Y-%m-%d %H:%M:%S')) if _before else None
-            filters.append(lambda n: re.match(_last_name, n['last_name'])) if _last_name else None
-            filters.append(lambda n: re.match(_phone_prefix, str(n['phone_prefix']))) if _phone_prefix else None
-            filters.append(lambda n: re.match(_phone_number, str(n['phone_number']))) if _phone_number else None
-            filters.append(lambda n: re.match(_street_number, str(n['street_number']))) if _street_number else None
-            filters.append(lambda n: re.match(_street_name, n['street_name'])) if _street_name else None
-            filters.append(lambda n: re.match(_city, n['city'])) if _city else None
-            filters.append(lambda n: re.match(_description, n['description'])) if _description else None
+            filters.append(lambda n: re.match(_last_name, n['last_name'], re.IGNORECASE)) if _last_name else None
+            filters.append(lambda n: re.match(_phone_prefix, str(n['phone_prefix'], re.IGNORECASE))) if _phone_prefix else None
+            filters.append(lambda n: re.match(_phone_number, str(n['phone_number'], re.IGNORECASE))) if _phone_number else None
+            filters.append(lambda n: re.match(_street_number, str(n['street_number'], re.IGNORECASE))) if _street_number else None
+            filters.append(lambda n: re.match(_street_name, n['street_name'], re.IGNORECASE)) if _street_name else None
+            filters.append(lambda n: re.match(_city, n['city'], re.IGNORECASE)) if _city else None
+            filters.append(lambda n: re.match(_description, n['description'], re.IGNORECASE)) if _description else None
             return filters
 
         parser = reqparse.RequestParser()
@@ -84,7 +84,7 @@ class NotificationID(Resource):
         return [
             x 
             for x in integrate_items()['items']
-            if re.match(url_id, x['id'])]
+            if re.match(url_id, x['id'], re.IGNORECASE)]
 
 
 @api.resource('/notification/date/<string:url_date>')
@@ -118,7 +118,7 @@ class NotificationSTREET(Resource):
         return [
             x 
             for x in integrate_items()['items']
-            if re.match(url_street, x['street_name'])]
+            if re.match(url_street, x['street_name'], re.IGNORECASE)]
 
 
 @api.resource('/notification/city/<string:url_city>')
@@ -127,7 +127,7 @@ class NotificationCITY(Resource):
         return [
             x 
             for x in integrate_items()['items'] 
-            if re.match(url_city, x['city'])]
+            if re.match(url_city, x['city'], re.IGNORECASE)]
 
 
 @api.resource('/notification/description/<string:url_description>')
@@ -136,7 +136,7 @@ class NotificationDESCRIPTION(Resource):
         return [
             x 
             for x in integrate_items()['items']
-            if re.match(url_description, x['description'])]
+            if re.match(url_description, x['description'], re.IGNORECASE)]
 
 
 @api.resource('/caller/name/<string:url_name>')
@@ -145,7 +145,7 @@ class CallerNAME(Resource):
         return [
             x 
             for x in integrate_items()['items']
-            if re.match(url_name, x['name'])]
+            if re.match(url_name, x['name'], re.IGNORECASE)]
 
 
 @api.resource('/caller/last_name/<string:url_last_name>')
@@ -154,7 +154,7 @@ class CallerLASTNAME(Resource):
         return [
             x 
             for x in integrate_items()['items']
-            if re.match(url_last_name, x['last_name'])]
+            if re.match(url_last_name, x['last_name'], re.IGNORECASE)]
 
 
 @api.resource('/caller/phone_prefix/<string:url_phone_prefix>')
@@ -163,7 +163,7 @@ class CallerPHONEPREFIX(Resource):
         return [
             x 
             for x in integrate_items()['items']
-            if re.match(url_phone_prefix, str(x['phone_prefix']))]
+            if re.match(url_phone_prefix, str(x['phone_prefix'], re.IGNORECASE))]
 
 
 @api.resource('/caller/phone_number/<string:url_phone_number>')
@@ -172,7 +172,7 @@ class CallerPHONENUMBER(Resource):
         return [
             x 
             for x in integrate_items()['items']
-            if re.match(url_phone_number, str(x['phone_number']))]
+            if re.match(url_phone_number, str(x['phone_number'], re.IGNORECASE))]
 
  
 def integrate_items():
