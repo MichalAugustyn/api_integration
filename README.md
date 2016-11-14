@@ -112,7 +112,7 @@ LAN007 | 2010-11-08 08:47:22 | 54 | Birchwood Crossing | Avalon | LAC007 | VITAE
 }
 ```
 ## Opis aplikacji API dla dostawców
-API dostawców zwracają informacje jedynie dla zapytań typu GET. Poniżej znajduje się lista dostępnych lokalizacji dla każdej z nich. 
+API dostawców zwracają informacje jedynie dla zapytań typu GET. Poniżej znajduje się lista dostępnych lokalizacji dla każdej z nich. W adresie można używać znaku szczególnego "\*" zastępującego zero lub więcej dowolnych znaków.
 
 dostawca I | dostawca II
 -------------- | -----------------
