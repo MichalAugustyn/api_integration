@@ -157,7 +157,7 @@ lokalizacja | szczegóły | przykład
 --------------------- | ------------------------ | ----------------
 /notification | zwraca wszystkie wiersze z obu baz danych
 /notification/id | filtrowanie danych po ID zdarzenia (regexp match) | /notifcation/id/NAN\.\*55
-/notification/date **X**| filtrowanie danych po dacie (data poprzedzona znakiem ">" lub "<" | /notification/date/>2015-10-05 12:15
+/notification/date | filtrowanie danych po dacie (data poprzedzona znakiem ">" lub "<" | /notification/date/>2015-10-05 12:15
 /notification/street | filtrowanie po nazwie ulicy (regexp match) | /notification/street/\.\*Avenue\.\* 
 /notification/city | filtrowanie po nazwie miasta (regexp match) | /notification/city/\.\*Los\.\*
 /notification/description | filtrowanie po opisie zdarzenia | /notification/description/\.\*lorem\.\*
@@ -197,6 +197,9 @@ rozwiązanie problemu - poprawa logiki sposobu zwracania odpowiedzi
 
 * możliwość porównywania dat jedynie w przypadku podania daty w całości
 rozwiązanie problemu - zastosowanie mechanizmu uzupełniania daty wartościami domyślnymi, jeżeli data jest niekompletna.
+
+* konieczność definiowania wielkich i małych liter w wyrażeniach regularnych.
+rozwiązanie problemu - zastosowanie funkcji re.IGNORECASE wbudowanej w module re
 
 ## Adres do repozytorium
 http://github.com/MichalAugustyn/api_integration.git
