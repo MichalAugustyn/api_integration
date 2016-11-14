@@ -142,13 +142,47 @@ kod | działanie
 * 'city': x['city'], | pozostaje bez zmian
 * 'description': x['description'].**capitalize()** | zmiana wielkości liter
 
-
 ## Struktura wynikowa encji
 
 city | date | description | id | last_name | name | phone_number | phone_prefix | street_name | street_number
 ------------- | ------------------------------ | ----------------------------------- | ----------- | ----------- | ------------ | ------------ | ------------- | ------ | ------
 "Buffalo" | "2013-10-06 12:10:47 | "Amet eler..." | "NYN500" | "Burke" | "Rebecca" | 7188468  | 653 | "Homewood Hill " | 1
 "Los Angeles" | "2013-10-04 14:46:16" | "Aenean auc..." | "LAN500" | "Ruiz" | "Katherine" | 1839793 | 911 | "Pond Street" | 80  
+
+## Dostęp do danych za pomocą metody GET
+
+Aplikacja umożliwia dostęp do danych poprzez kilka lokalizacji. Szczegóły każdej z nich opisane są w poniższej tabeli
+
+lokalizacja | szczegóły | przykład
+--------------------- | ------------------------ | ----------------
+/notification | zwraca wszystkie wiersze z obu baz danych
+/notification/id | filtrowanie danych po ID zdarzenia (regexp match) | /notifcation/id/NAN\.\*55
+/notification/date **X**| filtrowanie danych po dacie (data poprzedzona znakiem ">" lub "<" | /notification/date/>2015-10-05 12:15
+/notification/street | filtrowanie po nazwie ulicy (regexp match) | /notification/street/\.\*Avenue\.\* 
+/notification/city **X** | filtrowanie po nazwie miasta (regexp match) | /notification/city/\.\*Los\.\*
+/notification/description **X** | filtrowanie po opisie zdarzenia | /notification/description/\.\*lorem\.\*
+/caller/name | filtrowanie po imieniu zgłaszającego | /caller/name/\.\*ath\.\*/\.\*
+/caller/last_name | filtrowanie po nazwisku zgłaszającego | /caller/last_name/\.\*ed
+/caller/phone_prefix | filtrowanie po prefiksie (regexp match) | /caller/phone_prefix/546
+/caller/phone_number | filtrowanie po numerze telefonu (regexp match) | /caller/phone_number/\.\*555\.\*
+
+## Dostęp do danych za pomocą metody POST
+
+Wykorzystując zapytanie typu POST możemy wyciągnąć z baz danych wiersze, używając więcej niż jednego filtra. Dane przekazujemy w formacie JSON. Tabela przedstawia dostępne filtry oraz zakresy i wartości, które można przypisać każdej z nich.
+
+atrybut | wartości
+------------------- | ------------------------
+id | regexp match
+after | date
+before | date
+name | regexp match
+last_name | regexp match
+phone_prefix | regexp match
+phone_number | regexp match
+street_number | regexp match
+street_name | regexp match
+city | regexp match
+description | regexp match
 
 ## Napotkane problemy
 
