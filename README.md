@@ -111,6 +111,23 @@ LAN007 | 2010-11-08 08:47:22 | 54 | Birchwood Crossing | Avalon | LAC007 | VITAE
    "items_count":1
 }
 ```
+## Opis aplikacji API dla dostawców
+API dostawców zwracają informacje jedynie dla zapytań typu GET. Poniżej znajduje się lista dostępnych lokalizacji dla każdej z nich. 
+
+dostawca I | dostawca II
+-------------- | -----------------
+/notification | /notification
+/notification/id | /notification/id
+/notification/date_time | /notification/date
+/notification/street | /notification/street
+/notification/city | /notification/city
+/notification/callerid | /notification/callerid
+/notification/add_information | /notification/description
+/caller/id | /caller/id
+/caller/name | /caller/name
+/caller/last_name | /caller/name
+/caller/phone | /caller/phone_prefix
+/caller/phone | /caller/phone_number
 
 ## Opis aplikacji HUB API
 
