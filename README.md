@@ -149,7 +149,7 @@ kod | działanie
 'name': x['name'].**capitalize()**, | zmiana wielkości liter (pierwsza wielka, reszta mała)
 'last_name': x['last_name'].**capitalize()**, | jak wyżej
 'phone_prefix': int(**re.findall('\((\d+)\)', x['phone'])[0]**), | wydobycie prefixu przy użyciu wyrażeń reg.
-'phone_number': int("".join(**re.findall('(\d+)-(\d+)', x['phone'])[0])**) | wydobycie numeru przy użyciu wyrażeń reg.
+'phone_number': "".join(**re.findall('(\d+)-(\d+)', x['phone'])[0])** | wydobycie numeru przy użyciu wyrażeń reg.
 'street_number': int(**re.findall('(\d+) (.+)', x['address'])[0][0]**), | wydobycie numeru ulicy przy użyciu wyrażeń reg.
 'street_name': **re.findall('(\d+) (.+)', x['address'])[0][1]**, | jak wyżej - wydobycie nazwy ulicy
 'city': x['city'], | pozostaje bez zmian
