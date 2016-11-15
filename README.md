@@ -38,12 +38,12 @@
 
 ### Różnice w logach dostawców
 
-* Dostawca I
+#### Dostawca I
 ```
 [2010-10-23T09:10:18Z] (135)635-1735 - RALPH WALLACE - 3495 Jenifer Way, New York - "PEDE MALESUADA IN IMPERDIET ET COMMODO VULPUTATE JUSTO IN BLANDIT"
 ```
 
-* Dostawca II
+#### Dostawca II
 ```
 [24-10-2010 03:13:52] 3rd Hill 325, Avalon - Cheryl Jacobs 263 8242123 [TURPIS ELEMENTUM LIGULA VEHICULA CONSEQUAT MORBI A IPSUM INTEGER A NIBH IN]
 ```
@@ -51,28 +51,37 @@
 ### Różnice w strukturze baz danych dostawców
 
 ### Tabela CALLER
+
 #### Dostawca I
+
 id | name | last_name | phone
 ------ | ---- | --------- | -------------
 NYC000 | JOE | EDWARDS | (546)300-4812
+
 #### Dostawca II
+
 id | name | phone_prefix | phone_number
 ------ | ------------- | --------- | -------------
 LAC000 | Alan Gonzales | 812 | 9302240
+
 ### Tabela NOTIFICATION
+
 #### Dostawca I
+
 id | date_time | address | city | caller_id | additional_information
 ------ | ------- | ----------------- | ------------- | -------------- | --------------------
 NYN001 | 2010-10-23 09:10:18 | 3495 Jenifer Way | New York | NYC001 | PEDE MALESUADA INLIGUL
+
 #### Dostawca II
+
 id | date | street_number | street_name | city | caller_id | description
 ------ | ------------------- | ----------------------- | ------------- | -------------- | -------------------- | ----------------------
 LAN007 | 2010-11-08 08:47:22 | 54 | Birchwood Crossing | Avalon | LAC007 | VITAE IPSUM NON
 
-
 ### Różnice w odpowiedzi obu API
 
-* Dostawca I
+#### Dostawca I
+
 ```xml
 <response>
   <items>
@@ -91,7 +100,8 @@ LAN007 | 2010-11-08 08:47:22 | 54 | Birchwood Crossing | Avalon | LAC007 | VITAE
   <items_count>1</items_count>
 </response>
 ```
-* Dostawca II
+#### Dostawca II
+
 ``` python
 {
    "items":[
