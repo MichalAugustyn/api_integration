@@ -148,16 +148,16 @@ kod | działanie
 ### Integracja drugiego dostawcy:
 kod | działanie
 ------------------------------------------------------------------------------- | --------------------------------------
-* 'id': x['id'], | pozostaje bez zmian
-* 'date': x['date'], | pozostaje bez zmian
-* 'name': x['name'].**split()[0]**, | wydobycie pierwszego członu z imienia i nazwiska
-* 'last_name': x['name'].**split()[1].capitalize()**, | jak wyżej - wydobycie drugiego członu, zmiana wielkości  liter
-* 'phone_prefix': x['phone_prefix'], | pozostaje bez zmian
-* 'phone_number': x['phone_number'], | pozostaje bez zmian 
-* 'street_number': x['street_number'], | pozostaje bez zmian
-* 'street_name': x['street_name'], | pozostaje bez zmian
-* 'city': x['city'], | pozostaje bez zmian
-* 'description': x['description'].**capitalize()** | zmiana wielkości liter
+'id': x['id'], | pozostaje bez zmian
+'date': x['date'], | pozostaje bez zmian
+'name': x['name'].**split()[0]**, | wydobycie pierwszego członu z imienia i nazwiska
+'last_name': x['name'].**split()[1].capitalize()**, | jak wyżej - wydobycie drugiego członu, zmiana wielkości  liter
+'phone_prefix': x['phone_prefix'], | pozostaje bez zmian
+'phone_number': x['phone_number'], | pozostaje bez zmian 
+'street_number': x['street_number'], | pozostaje bez zmian
+'street_name': x['street_name'], | pozostaje bez zmian
+'city': x['city'], | pozostaje bez zmian
+'description': x['description'].**capitalize()** | zmiana wielkości liter
 
 ## Struktura wynikowa encji
 
