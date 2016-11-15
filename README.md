@@ -143,7 +143,7 @@ dostawca I | dostawca II
 
 ### Integracja pierwszego dostawcy:
 kod | działanie
-------------------------------------------------------------------------------- | --------------------------------------
+-------------------------------------------------------------------------------------------- | --------------------------------------
 'id': x['id'], | pozostaje bez zmian
 'date': x[**'date_time'**], | zmiana nazwy atrybutu
 'name': x['name'].**capitalize()**, | zmiana wielkości liter (pierwsza wielka, reszta mała)
@@ -157,7 +157,7 @@ kod | działanie
 
 ### Integracja drugiego dostawcy:
 kod | działanie
-------------------------------------------------------------------------------- | --------------------------------------
+------------------------------------------------------------------------------------------- | --------------------------------------
 'id': x['id'], | pozostaje bez zmian
 'date': x['date'], | pozostaje bez zmian
 'name': x['name'].**split()[0]**, | wydobycie pierwszego członu z imienia i nazwiska
