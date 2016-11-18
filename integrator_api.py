@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from simplexml import loads
-from flask import make_response, Flask
+from flask import make_response, Flask, render_template, Blueprint
 from flask import Flask
 from datetime import datetime
 import json
@@ -11,10 +11,16 @@ from flask_restful import reqparse
 from xml.etree import ElementTree
 from flask.ext.mysql import MySQL
 from time import sleep
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 api = Api(app, default_mediatype='application/json')
+Bootstrap(app)
 
+@app.route('/')
+def client():
+    items = integrate_items()['items']
+    return render_template('base.html', data=items)
 
 @api.resource('/notification')
 class Notification(Resource):
